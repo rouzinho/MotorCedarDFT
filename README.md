@@ -2,7 +2,7 @@
 
 This Cedar plugin allow the control of the Gummi-Head through a ROS Publisher
 
-#WORK IN PROGRESS
+# *WORK IN PROGRESS*
 
 
 ## Authors
