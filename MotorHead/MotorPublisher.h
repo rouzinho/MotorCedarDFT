@@ -34,8 +34,8 @@
 
 ======================================================================================================================*/
 
-#ifndef CEDAR_TUTORIAL_SIMPLE_SUMMATION_H
-#define CEDAR_TUTORIAL_SIMPLE_SUMMATION_H
+#ifndef CEDAR_MOTOR_PUBLISHER
+#define CEDAR_MOTOR_PUBLISHER
 
 // CEDAR INCLUDES
 #include <cedar/processing/Step.h> // if we are going to inherit from cedar::proc::Step, we have to include the header
@@ -43,6 +43,8 @@
 // FORWARD DECLARATIONS
 #include <cedar/auxiliaries/MatData.fwd.h>
 #include <cedar/auxiliaries/UIntParameter.h>
+#include <cedar/auxiliaries/DoubleParameter.h>
+#include <cedar/auxiliaries/StringParameter.h>
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
 
@@ -52,7 +54,7 @@
  *
  * Seriously, I mean it!.
  */
-class EarSubscriber : public cedar::proc::Step
+class MotorPublisher : public cedar::proc::Step
 {
   Q_OBJECT
   //--------------------------------------------------------------------------------------------------------------------
@@ -60,7 +62,7 @@ class EarSubscriber : public cedar::proc::Step
   //--------------------------------------------------------------------------------------------------------------------
 public:
   //!@brief The standard constructor.
-  EarSubscriber();
+  MotorPublisher();
 
   //!@brief Destructor
 
@@ -93,10 +95,13 @@ protected:
 private:
   //!@brief this is the output of the computation (in this case, the summed inputs)
   cedar::aux::MatDataPtr mOutput;
+  //cedar::aux::MatDataPtr mInput;
   std::vector<unsigned int> mGaussMatrixSizes;
   std::vector<double> mGaussMatrixSigmas;
   std::vector<double> mGaussMatrixCenters;
   cedar::aux::UIntParameterPtr mEar;
+  cedar::aux::DoubleParameterPtr mCenter;
+  cedar::aux::StringParameterPtr _mPath;
   ros::NodeHandle n;
   ros::Subscriber sub;
   int i;

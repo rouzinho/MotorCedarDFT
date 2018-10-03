@@ -35,7 +35,7 @@
 ======================================================================================================================*/
 
 // CEDAR INCLUDES
-#include "EarSubscriber.h"
+#include "MotorPublisher.h"
 #include <cedar/processing/ExternalData.h> // getInputSlot() returns ExternalData
 #include <cedar/auxiliaries/MatData.h> // this is the class MatData, used internally in this step
 #include "cedar/auxiliaries/math/functions.h"
@@ -45,12 +45,14 @@
 //----------------------------------------------------------------------------------------------------------------------
 // constructors and destructor
 //----------------------------------------------------------------------------------------------------------------------
-EarSubscriber::EarSubscriber()
+MotorPublisher::MotorPublisher()
 :
-cedar::proc::Step(true), mOutput(new cedar::aux::MatData(cv::Mat::zeros(50, 50, CV_32F))),
-mEar(new cedar::aux::UIntParameter(this, "0 For left, 1 for right", 1, cedar::aux::UIntParameter::LimitType::positive(2)))
+cedar::proc::Step(true),
+//_mPath(new cedar::aux::StringParameter(this, "buffer path", "")),
+mCenter(new cedar::aux::DoubleParameter(this,"1 meter in field",1)),
+mOutput(new cedar::aux::MatData(cv::Mat::zeros(50, 50, CV_32F)))
 {
-this->declareOutput("demo_output", mOutput);
+this->declareInput("peak to activate motor position", true);
 
 mGaussMatrixSizes.push_back(50);
 
@@ -60,18 +62,19 @@ mGaussMatrixCenters.push_back(25.0);
 //init the variable that will get the sensor value
 dat = 0;
 
-this->connect(this->mEar.get(), SIGNAL(valueChanged()), this, SLOT(updateOut()));
+//this->connect(this->_mPath.get(), SIGNAL(valueChanged()), this, SLOT(updateOut()));
+this->connect(this->mCenter.get(), SIGNAL(valueChanged()), this, SLOT(updateOut()));
 
 
 }
 //----------------------------------------------------------------------------------------------------------------------
 // methods
 //----------------------------------------------------------------------------------------------------------------------
-void EarSubscriber::compute(const cedar::proc::Arguments&)
+void MotorPublisher::compute(const cedar::proc::Arguments&)
 {
 
   //subscriber for the ear. The rate of subscription is based on the one on Arduino e.g 10ms
-  sub = n.subscribe("/ear", 1000, &EarSubscriber::chatterCallback,this);
+  sub = n.subscribe("/ear", 1000, &MotorPublisher::chatterCallback,this);
   ros::Rate loop_rate(98);
   loop_rate.sleep();
   ros::spinOnce();
@@ -82,19 +85,19 @@ void EarSubscriber::compute(const cedar::proc::Arguments&)
 
 }
 
-void EarSubscriber::updateOut()
+void MotorPublisher::updateOut()
 {
    choice = static_cast<int>(this->mEar->getValue());
 }
 
 //callback for the subscriber. This one get the value of the sensor.
-void EarSubscriber::chatterCallback(const std_msgs::Float64::ConstPtr& msg)
+void MotorPublisher::chatterCallback(const std_msgs::Float64::ConstPtr& msg)
 {
    ROS_INFO("I heard: [%f]", msg->data);
    dat = msg->data;
 }
 
-void EarSubscriber::reset()
+void MotorPublisher::reset()
 {
 
 	//ros::shutdown();
