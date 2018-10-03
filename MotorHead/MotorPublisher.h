@@ -45,8 +45,9 @@
 #include <cedar/auxiliaries/UIntParameter.h>
 #include <cedar/auxiliaries/DoubleParameter.h>
 #include <cedar/auxiliaries/StringParameter.h>
-#include "ros/ros.h"
-#include "std_msgs/Float64.h"
+#include <cedar/processing/sources/GaussInput.h>
+//#include "ros/ros.h"
+//#include "std_msgs/Float64.h"
 
 // SYSTEM INCLUDES
 
@@ -72,6 +73,7 @@ public:
 public slots:
   // none yet
   void updateOut();
+  void reCompute();
   //--------------------------------------------------------------------------------------------------------------------
   // protected methods
   //--------------------------------------------------------------------------------------------------------------------
@@ -84,7 +86,7 @@ protected:
 private:
   // The arguments are unused here
   void compute(const cedar::proc::Arguments&);
-  void chatterCallback(const std_msgs::Float64::ConstPtr& msg);
+  //void chatterCallback(const std_msgs::Float64::ConstPtr& msg);
   void reset();
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -95,18 +97,21 @@ protected:
 private:
   //!@brief this is the output of the computation (in this case, the summed inputs)
   cedar::aux::MatDataPtr mOutput;
+  cedar::aux::MatDataPtr mInput;
   //cedar::aux::MatDataPtr mInput;
   std::vector<unsigned int> mGaussMatrixSizes;
   std::vector<double> mGaussMatrixSigmas;
   std::vector<double> mGaussMatrixCenters;
+  cedar::proc::sources::GaussInput motorval;
   cedar::aux::UIntParameterPtr mEar;
   cedar::aux::DoubleParameterPtr mCenter;
   cedar::aux::StringParameterPtr _mPath;
-  ros::NodeHandle n;
-  ros::Subscriber sub;
+  //ros::NodeHandle n;
+  //ros::Subscriber sub;
   int i;
   double dat;
   int choice;
+  double pos;
 
   //--------------------------------------------------------------------------------------------------------------------
   // parameters
