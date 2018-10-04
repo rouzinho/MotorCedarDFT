@@ -39,6 +39,7 @@
 #include <cedar/processing/ExternalData.h> // getInputSlot() returns ExternalData
 #include <cedar/auxiliaries/MatData.h> // this is the class MatData, used internally in this step
 #include "cedar/auxiliaries/math/functions.h"
+#include <cmath>
 #include "std_msgs/Float64.h"
 
 
@@ -54,6 +55,7 @@ cedar::proc::Step(true)
 //mCenter(new cedar::aux::DoubleParameter(this,"Motor Pos",25))
 {
 this->declareInput("motor", true);
+pub = n.advertise<std_msgs::Float64>("MotorCommand", 1000);
 //this->connect(this->mCenter.get(), SIGNAL(valueChanged()), this, SLOT(reCompute()));
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -73,15 +75,19 @@ void MotorPublisher::compute(const cedar::proc::Arguments&)
   //this->mOutput->setData(cedar::aux::math::gaussMatrix(1,mGaussMatrixSizes,dat,mGaussMatrixSigmas,mGaussMatrixCenters,true));
   cedar::aux::ConstDataPtr op1 = this->getInputSlot("motor")->getData();
   cv::Mat doublepos = op1->getData<cv::Mat>();
-  pub = n.advertise<std_msgs::Float64>("MotorCommand", 1000);
+
   ros::Rate loop_rate(98);
   float t1 = doublepos.at<float>(0);
   pos = static_cast<double> (t1);
-  motorPos.data = pos;
+  if(std::abs(old_pos - pos) < 0.005)
+  {
+    pub.publish(motorPos);
+    loop_rate.sleep();
+    ros::spinOnce();
+  }
 
-  pub.publish(motorPos);
-  loop_rate.sleep();
-  ros::spinOnce();
+  motorPos.data = pos;
+  old_pos = pos;
 
 }
 
