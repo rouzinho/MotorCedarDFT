@@ -39,6 +39,7 @@
 #include <cedar/processing/ExternalData.h> // getInputSlot() returns ExternalData
 #include <cedar/auxiliaries/MatData.h> // this is the class MatData, used internally in this step
 #include "cedar/auxiliaries/math/functions.h"
+#include "std_msgs/Float64.h"
 
 
 // SYSTEM INCLUDES
@@ -72,13 +73,15 @@ void MotorPublisher::compute(const cedar::proc::Arguments&)
   //this->mOutput->setData(cedar::aux::math::gaussMatrix(1,mGaussMatrixSizes,dat,mGaussMatrixSigmas,mGaussMatrixCenters,true));
   cedar::aux::ConstDataPtr op1 = this->getInputSlot("motor")->getData();
   cv::Mat doublepos = op1->getData<cv::Mat>();
-
+  pub = n.advertise<std_msgs::Float64>("MotorCommand", 1000);
+  ros::Rate loop_rate(98);
   float t1 = doublepos.at<float>(0);
   pos = static_cast<double> (t1);
-  std::cout<<pos;
-  std::cout<<"---------\n";
+  motorPos.data = pos;
 
-
+  pub.publish(motorPos);
+  loop_rate.sleep();
+  ros::spinOnce();
 
 }
 
