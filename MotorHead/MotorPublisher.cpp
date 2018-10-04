@@ -48,27 +48,12 @@
 //----------------------------------------------------------------------------------------------------------------------
 MotorPublisher::MotorPublisher()
 :
-cedar::proc::Step(true),
-//_mPath(new cedar::aux::StringParameter(this, "buffer path", "")),
-
+cedar::proc::Step(true)
 //mOutput(new cedar::aux::MatData(cv::Mat::zeros(50, 50, CV_32F))),
-mCenter(new cedar::aux::DoubleParameter(this,"Motor Pos",25))
+//mCenter(new cedar::aux::DoubleParameter(this,"Motor Pos",25))
 {
 this->declareInput("motor", true);
-//this->declareOutput("Motor Position",mOutput);
-
-mGaussMatrixSizes.push_back(50);
-
-mGaussMatrixSigmas.push_back(3.0);
-
-mGaussMatrixCenters.push_back(25.0);
-//init the variable that will get the sensor value
-dat = 5;
-
-//this->connect(this->_mPath.get(), SIGNAL(valueChanged()), this, SLOT(updateOut()));
-this->connect(this->mCenter.get(), SIGNAL(valueChanged()), this, SLOT(reCompute()));
-
-
+//this->connect(this->mCenter.get(), SIGNAL(valueChanged()), this, SLOT(reCompute()));
 }
 //----------------------------------------------------------------------------------------------------------------------
 // methods
@@ -86,16 +71,12 @@ void MotorPublisher::compute(const cedar::proc::Arguments&)
   //change the Gaussian function with the value of the ear sensor.
   //this->mOutput->setData(cedar::aux::math::gaussMatrix(1,mGaussMatrixSizes,dat,mGaussMatrixSigmas,mGaussMatrixCenters,true));
   cedar::aux::ConstDataPtr op1 = this->getInputSlot("motor")->getData();
-  //cv::Mat doublepos = mOutput->getData();
   cv::Mat doublepos = op1->getData<cv::Mat>();
-  //pos = op1->getData<double>();
-  //int t = doublepos.total();
-  //std::cout<<t;
-  //std::cout<<"\n";
-  pos = doublepos.at<double>(0);
-  std::cout<<doublepos;
+
+  float t1 = doublepos.at<float>(0);
+  pos = static_cast<double> (t1);
   std::cout<<pos;
-  std::cout<<"-----------------------------------------------------\n";
+  std::cout<<"---------\n";
 
 
 
@@ -107,11 +88,6 @@ void MotorPublisher::reCompute()
   //mGaussMatrixCenters.clear();
   //mGaussMatrixCenters.push_back(pos);
   //this->mOutput->setData(cedar::aux::math::gaussMatrix(1,mGaussMatrixSizes,dat,mGaussMatrixSigmas,mGaussMatrixCenters,true));
-}
-
-void MotorPublisher::updateOut()
-{
-   pos = static_cast<double>(this->mCenter->getValue());
 }
 /*
 //callback for the subscriber. This one get the value of the sensor.

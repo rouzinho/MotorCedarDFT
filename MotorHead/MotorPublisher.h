@@ -72,7 +72,6 @@ public:
   //--------------------------------------------------------------------------------------------------------------------
 public slots:
   // none yet
-  void updateOut();
   void reCompute();
   //--------------------------------------------------------------------------------------------------------------------
   // protected methods
@@ -95,22 +94,10 @@ private:
 protected:
   // none yet
 private:
-  //!@brief this is the output of the computation (in this case, the summed inputs)
-  cedar::aux::MatDataPtr mOutput;
+  //!@brief this is the output of the computation (in this case, the summed inputs
   cedar::aux::MatDataPtr mInput;
-  //cedar::aux::MatDataPtr mInput;
-  std::vector<unsigned int> mGaussMatrixSizes;
-  std::vector<double> mGaussMatrixSigmas;
-  std::vector<double> mGaussMatrixCenters;
-  cedar::proc::sources::GaussInput motorval;
-  cedar::aux::UIntParameterPtr mEar;
-  cedar::aux::DoubleParameterPtr mCenter;
-  cedar::aux::StringParameterPtr _mPath;
   //ros::NodeHandle n;
   //ros::Subscriber sub;
-  int i;
-  double dat;
-  int choice;
   double pos;
 
   //--------------------------------------------------------------------------------------------------------------------
