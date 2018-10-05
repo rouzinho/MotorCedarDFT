@@ -82,6 +82,7 @@ For this case, I read data from a noise sensor and use the value as amplitude of
 
 
 The plugin is more like an artefact binding sensors to DFT.
+Work in progress to use Qt elements to control the settings.
 
 
 
