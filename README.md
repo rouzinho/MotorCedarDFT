@@ -73,9 +73,7 @@ You can close the window. The plugin is loaded inside cedar and before loading i
 
 You can now go back to the cedar main interface and click on the Utilities tab.
 
-Drag the EarSubscriber widget into the architecture panel. When your architecture is ready, you can start the simulation.
-You will see that the EarSubscriber transform the input of a topic into a 1D Gaussian function.
-For this case, I read data from a noise sensor and use the value as amplitude of the gaussian function.
+Drag the MotorHead widget into the architecture panel. Connect the output of a space to rate widget to the input of the MotorHead widget. The outputs of the Neural Field now drive the motor of your choice !
 
 
 ## Work in progress
