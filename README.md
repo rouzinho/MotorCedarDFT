@@ -12,7 +12,7 @@ Everything you need to know about ROS -> http://www.ros.org/
 
 The plugin is a widget reading outputs from a Neural Field (with a space to rate widget) and publishing the data to the motors of the Gummi Head.
 
-Of course you can adapat it to publish commands to any topics, but you might want to change the scale or format of the datas received from the Neural Field.
+Of course you can adapt it to publish commands to any topics, but you might want to change the scale or format of the datas received from the Neural Field.
 
 The code work for the 6.x version of Cedar.
 
