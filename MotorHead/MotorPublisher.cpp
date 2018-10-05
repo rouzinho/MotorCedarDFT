@@ -64,15 +64,6 @@ pub = n.advertise<std_msgs::Float64>("MotorCommand", 1000);
 void MotorPublisher::compute(const cedar::proc::Arguments&)
 {
 
-  //subscriber for the ear. The rate of subscription is based on the one on Arduino e.g 10ms
-  /*
-  sub = n.subscribe("/ear", 1000, &MotorPublisher::chatterCallback,this);
-  ros::Rate loop_rate(98);
-  loop_rate.sleep();
-  ros::spinOnce();
-  */
-  //change the Gaussian function with the value of the ear sensor.
-  //this->mOutput->setData(cedar::aux::math::gaussMatrix(1,mGaussMatrixSizes,dat,mGaussMatrixSigmas,mGaussMatrixCenters,true));
   cedar::aux::ConstDataPtr op1 = this->getInputSlot("motor")->getData();
   cv::Mat doublepos = op1->getData<cv::Mat>();
 
@@ -98,14 +89,7 @@ void MotorPublisher::reCompute()
   //mGaussMatrixCenters.push_back(pos);
   //this->mOutput->setData(cedar::aux::math::gaussMatrix(1,mGaussMatrixSizes,dat,mGaussMatrixSigmas,mGaussMatrixCenters,true));
 }
-/*
-//callback for the subscriber. This one get the value of the sensor.
-void MotorPublisher::chatterCallback(const std_msgs::Float64::ConstPtr& msg)
-{
-   ROS_INFO("I heard: [%f]", msg->data);
-   dat = msg->data;
-}
-*/
+
 void MotorPublisher::reset()
 {
 

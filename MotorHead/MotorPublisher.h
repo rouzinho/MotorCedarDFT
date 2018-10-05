@@ -85,7 +85,6 @@ protected:
 private:
   // The arguments are unused here
   void compute(const cedar::proc::Arguments&);
-  //void chatterCallback(const std_msgs::Float64::ConstPtr& msg);
   void reset();
 
   //--------------------------------------------------------------------------------------------------------------------
