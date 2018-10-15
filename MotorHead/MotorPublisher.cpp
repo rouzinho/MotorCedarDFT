@@ -55,7 +55,8 @@ cedar::proc::Step(true)
 //mCenter(new cedar::aux::DoubleParameter(this,"Motor Pos",25))
 {
 this->declareInput("motor", true);
-pub = n.advertise<std_msgs::Float64>("MotorCommand", 1000);
+pub = n.advertise<std_msgs::Float64>("/head_yaw_controller/command", 1000);
+motorPos.data = 0;
 //this->connect(this->mCenter.get(), SIGNAL(valueChanged()), this, SLOT(reCompute()));
 }
 //----------------------------------------------------------------------------------------------------------------------
