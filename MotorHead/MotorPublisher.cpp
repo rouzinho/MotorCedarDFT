@@ -50,14 +50,16 @@
 //----------------------------------------------------------------------------------------------------------------------
 MotorPublisher::MotorPublisher()
 :
-cedar::proc::Step(true)
+cedar::proc::Step(true),
+mTopic(new cedar::aux::StringParameter(this, "Topic Name", "")),
 //mOutput(new cedar::aux::MatData(cv::Mat::zeros(50, 50, CV_32F))),
-//mCenter(new cedar::aux::DoubleParameter(this,"Motor Pos",25))
+mCenter(new cedar::aux::DoubleParameter(this,"Motor Pos",25))
 {
 this->declareInput("motor", true);
-pub = n.advertise<std_msgs::Float64>("/head_yaw_controller/command", 1000);
+//pub = n.advertise<std_msgs::Float64>("/head_yaw_controller/command", 1000);
 motorPos.data = 0;
-//this->connect(this->mCenter.get(), SIGNAL(valueChanged()), this, SLOT(reCompute()));
+this->connect(this->mCenter.get(), SIGNAL(valueChanged()), this, SLOT(reCompute()));
+this->connect(this->mTopic.get(), SIGNAL(valueChanged()), this, SLOT(reName()));
 }
 //----------------------------------------------------------------------------------------------------------------------
 // methods
@@ -85,10 +87,13 @@ void MotorPublisher::compute(const cedar::proc::Arguments&)
 
 void MotorPublisher::reCompute()
 {
-  //pos = static_cast<double>(this->mCenter->getValue());
-  //mGaussMatrixCenters.clear();
-  //mGaussMatrixCenters.push_back(pos);
-  //this->mOutput->setData(cedar::aux::math::gaussMatrix(1,mGaussMatrixSizes,dat,mGaussMatrixSigmas,mGaussMatrixCenters,true));
+   const std::string tname = topicName;
+   pub = n.advertise<std_msgs::Float64>(tname, 1000);
+}
+
+void MotorPublisher::reName()
+{
+   topicName = this->mTopic->getValue();
 }
 
 void MotorPublisher::reset()

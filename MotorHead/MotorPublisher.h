@@ -73,6 +73,7 @@ public:
 public slots:
   // none yet
   void reCompute();
+  void reName();
   //--------------------------------------------------------------------------------------------------------------------
   // protected methods
   //--------------------------------------------------------------------------------------------------------------------
@@ -95,6 +96,9 @@ protected:
 private:
   //!@brief this is the output of the computation (in this case, the summed inputs
   cedar::aux::MatDataPtr mInput;
+  cedar::aux::StringParameterPtr mTopic;
+  cedar::aux::DoubleParameterPtr mCenter;
+  std::string topicName;
   ros::NodeHandle n;
   ros::Publisher pub;
   std_msgs::Float64 motorPos;
