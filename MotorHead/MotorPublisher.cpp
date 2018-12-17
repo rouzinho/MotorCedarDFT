@@ -43,6 +43,7 @@
 #include "std_msgs/Float64.h"
 
 
+
 // SYSTEM INCLUDES
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -52,13 +53,22 @@ MotorPublisher::MotorPublisher()
 :
 cedar::proc::Step(true),
 mTopic(new cedar::aux::StringParameter(this, "Topic Name", "")),
+mLimb(new cedar::aux::StringParameter(this, "Limb Name", "")),
 //mOutput(new cedar::aux::MatData(cv::Mat::zeros(50, 50, CV_32F))),
-mCenter(new cedar::aux::DoubleParameter(this,"Motor Pos",25))
+mCenter(new cedar::aux::DoubleParameter(this,"Change Topic",25))
 {
 this->declareInput("motor", true);
 motorPos.data = 0;
+motorCommand.name.resize(1);
+motorCommand.position.resize(1);
+motorCommand.effort.resize(1);
+motorCommand.velocity.resize(1);
+motorCommand.position[0] = 0;
+motorCommand.effort[0] = 999;
+motorCommand.velocity[0] = 0;
 this->connect(this->mCenter.get(), SIGNAL(valueChanged()), this, SLOT(reCompute()));
 this->connect(this->mTopic.get(), SIGNAL(valueChanged()), this, SLOT(reName()));
+this->connect(this->mLimb.get(), SIGNAL(valueChanged()), this, SLOT(reName()));
 }
 //----------------------------------------------------------------------------------------------------------------------
 // methods
@@ -72,14 +82,28 @@ void MotorPublisher::compute(const cedar::proc::Arguments&)
   ros::Rate loop_rate(98);
   float t1 = doublepos.at<float>(0);
   pos = static_cast<double> (t1);
-  if(std::abs(old_pos - pos) < 0.005)
+
+  if(std::abs(old_pos - pos) > 0.005)
   {
-    pub.publish(motorPos);
-    loop_rate.sleep();
-    ros::spinOnce();
+     if(choice == 0)
+     {
+        motorPos.data = pos;
+        pub.publish(motorPos);
+        loop_rate.sleep();
+        ros::spinOnce();
+     }
+     else
+     {
+        motorCommand.position.resize(1);
+        motorCommand.position[0] = pos;
+        pub.publish(motorCommand);
+        std::cout << motorCommand << '\n';
+        loop_rate.sleep();
+        ros::spinOnce();
+     }
   }
 
-  motorPos.data = pos;
+
   old_pos = pos;
 
 }
@@ -87,12 +111,25 @@ void MotorPublisher::compute(const cedar::proc::Arguments&)
 void MotorPublisher::reCompute()
 {
    const std::string tname = topicName;
-   pub = n.advertise<std_msgs::Float64>(tname, 1000);
+   const std::string tnamelimb = limbName;
+   if(!tnamelimb.empty())
+   {
+      choice = 1;
+      motorCommand.name.resize(1);
+      motorCommand.name[0] = tnamelimb;
+      pub = n.advertise<sensor_msgs::JointState>("/gummi/joint_commands", 1000);
+   }
+   else
+   {
+      choice = 0;
+      pub = n.advertise<std_msgs::Float64>(tname, 1000);
+   }
 }
 
 void MotorPublisher::reName()
 {
    topicName = this->mTopic->getValue();
+   limbName = this->mLimb->getValue();
 }
 
 void MotorPublisher::reset()

@@ -48,6 +48,7 @@
 #include <cedar/processing/sources/GaussInput.h>
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
+#include "sensor_msgs/JointState.h"
 
 // SYSTEM INCLUDES
 
@@ -97,13 +98,18 @@ private:
   //!@brief this is the output of the computation (in this case, the summed inputs
   cedar::aux::MatDataPtr mInput;
   cedar::aux::StringParameterPtr mTopic;
+  cedar::aux::StringParameterPtr mLimb;
   cedar::aux::DoubleParameterPtr mCenter;
+  cedar::aux::UIntParameterPtr mDim;
   std::string topicName;
+  std::string limbName;
   ros::NodeHandle n;
   ros::Publisher pub;
   std_msgs::Float64 motorPos;
+  sensor_msgs::JointState motorCommand;
   double pos;
   double old_pos;
+  int choice;
   //--------------------------------------------------------------------------------------------------------------------
   // parameters
   //--------------------------------------------------------------------------------------------------------------------
