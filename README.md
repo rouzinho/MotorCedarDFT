@@ -1,6 +1,6 @@
-# MotorHead in Cedar
+# Motor Control in Cedar
 
-This Cedar plugin allow the control of the Gummi-Head through a ROS Publisher
+This Cedar plugin allow the control of the Gummi Arm through a ROS Publisher
 
 Everything you want to know about DFT -> https://dynamicfieldtheory.org/
 
@@ -10,7 +10,9 @@ Everything you need to know about ROS -> http://www.ros.org/
 
 ## Getting Started
 
-The plugin is a widget reading outputs from a Neural Field (with a space to rate widget) and publishing the data to the motors of the Gummi Head.
+The plugin is a widget reading outputs from a Neural Field (with a space to rate widget) and publishing the data to the motors of the Gummi.
+
+You can define directly in the Qt Widget if you want to publish a Float64 on a topic or a JoinState message.
 
 Of course you can adapt it to publish commands to any topics, but you might want to change the scale or format of the datas received from the Neural Field.
 
