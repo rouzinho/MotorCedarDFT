@@ -69,39 +69,38 @@ motorCommand.velocity[0] = 0;
 //this->connect(this->mCenter.get(), SIGNAL(valueChanged()), this, SLOT(reCompute()));
 this->connect(this->mTopic.get(), SIGNAL(valueChanged()), this, SLOT(reName()));
 this->connect(this->mLimb.get(), SIGNAL(valueChanged()), this, SLOT(reName()));
-this->connect(this->mEffort.get(), SIGNAL(valueChanged()), this, SLOT(reName()));
+this->connect(this->mEffort.get(), SIGNAL(valueChanged()), this, SLOT(reCompute()));
 
 }
 //----------------------------------------------------------------------------------------------------------------------
 // methods
 //----------------------------------------------------------------------------------------------------------------------
+//generic publisher. If limbName is there, a JointCommand will be published. Otherwise it's publishing a Float64 on the topic name.
 void MotorPublisher::compute(const cedar::proc::Arguments&)
 {
-
   cedar::aux::ConstDataPtr op1 = this->getInputSlot("motor")->getData();
   cv::Mat doublepos = op1->getData<cv::Mat>();
 
-  ros::Rate loop_rate(98);
   float t1 = doublepos.at<float>(0);
   pos = static_cast<double> (t1);
 
-  if(std::abs(old_pos - pos) > 0.005)
+  if(std::abs(std::abs(old_pos) -  std::abs(pos))> 0.01)
   {
      if(choice == 0)
      {
         motorPos.data = pos;
         pub.publish(motorPos);
-        loop_rate.sleep();
-        ros::spinOnce();
+        //loop_rate.sleep();
+        //ros::spinOnce();
      }
      else
      {
         motorCommand.position.resize(1);
         motorCommand.position[0] = pos;
         pub.publish(motorCommand);
-        std::cout << motorCommand << '\n';
-        loop_rate.sleep();
-        ros::spinOnce();
+        //std::cout << motorCommand << '\n';
+        //loop_rate.sleep();
+        //ros::spinOnce();
      }
   }
   old_pos = pos;
@@ -116,7 +115,8 @@ void MotorPublisher::reCompute()
       choice = 1;
       motorCommand.name.resize(1);
       motorCommand.name[0] = tnamelimb;
-      pub = n.advertise<sensor_msgs::JointState>("/gummi/joint_commands", 1000);
+      motorCommand.effort[0] = effort;
+      pub = n.advertise<sensor_msgs::JointState>(topicName, 1000);
    }
    else
    {
@@ -130,7 +130,6 @@ void MotorPublisher::reName()
    topicName = this->mTopic->getValue();
    limbName = this->mLimb->getValue();
    effort = this->mEffort->getValue();
-   motorCommand.effort[0] = effort;
 }
 
 void MotorPublisher::reset()
